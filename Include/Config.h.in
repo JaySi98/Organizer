@@ -1,0 +1,5 @@
+#define Organizer_VERSION_MAJOR @Organizer_VERSION_MAJOR@
+#define Organizer_VERSION_MINOR @Organizer_VERSION_MINOR@
+
+#cmakedefine ADD_NCURSES
+#cmakedefine ADD_BOOST
