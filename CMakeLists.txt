@@ -9,10 +9,14 @@ project(Organizer VERSION 1.0)
 
 set(SOURCES
     Src/Main.cpp
+    Src/GraphicsControler.cpp
+    Src/GraphicWindow.cpp
 )
 
 set(HEADERS
     Include/Config.h.in
+    Include/GraphicsControler.h
+    Include/GraphicWindow.h
 )
 
 # wskazanie maina
@@ -31,7 +35,14 @@ if(ADD_NCURSES)
     find_package(Curses REQUIRED)
 
     list(APPEND EXTRA_INCLUDES ${CURSES_INCLUDE_DIR})
-    list(APPEND EXTRA_LINKS    ${CURSES_LIBRARIES})
+    list(APPEND EXTRA_LINKS    -lcdk -lmenu -lpanel -lncurses ) #${CURSES_LIBRARIES}
+
+    # cdk library
+    # add_subdirectory(Lib/CDK)
+    # list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/Lib/CDK/include")
+    # list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/Lib/CDK/include/cdk")
+    # list(APPEND EXTRA_LIBS     "${PROJECT_SOURCE_DIR}/Lib/CDK/src")
+    # list(APPEND EXTRA_LINKS    "${PROJECT_SOURCE_DIR}/Lib/CDK/lib/libcdk.a")
 endif()
 
 if(ADD_BOOST)

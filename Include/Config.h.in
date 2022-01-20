@@ -3,3 +3,7 @@
 
 #cmakedefine ADD_NCURSES
 #cmakedefine ADD_BOOST
+
+// std::cout << argv[0] << " Version: " 
+//           << Organizer_VERSION_MAJOR << "."
+//           << Organizer_VERSION_MINOR << std::endl;
