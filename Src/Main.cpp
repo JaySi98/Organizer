@@ -3,144 +3,195 @@
 #include <boost/regex.hpp>
 
 #include <GraphicsControler.h>
+#include <GraphicWindow.h>
 
-int main(int argc, char* argv[])
-{
-    GraphicsControler *graphics = new GraphicsControler(); 
+// int main(int argc, char* argv[])
+// {
+//     // inicjalizacja
+//     GraphicsControler *graphicsControler = new GraphicsControler(argc, argv);
+
+//     // pierwsze narysowanie wszystkiego
+//     graphicsControler->RefreshScreen();
     
-    while(1)
-    {        
-        graphics->MainLoopRoutine();
+//     // dopóki user nie zamknął programu
+//     while(graphicsControler->IsOpened())
+//     {
+//         // zebranie inputu od usera
+//         graphicsControler->AnalyzeUserInput();
 
-        // exit main loop and end program
-        if(graphics->IsOpened())
-        {
-            break;
-        }
-    }
+//         // odswiezenie grafiki     
+//         graphicsControler->RefreshScreen();
+//     }
 
-    delete graphics;
-    return EXIT_SUCCESS;
+//     // zwolnienie pamięci itp
+//     delete graphicsControler;
+
+//     return EXIT_SUCCESS;
+
+// wymiary okna 65, 80
+// }
+
+
+/*
+ * This demo displays the ability to put widgets within a curses subwindow.
+ */
+// int main (int argc, char **argv)
+// {
+//    CDKSCREEN *cdkscreen;
+//    CDKSCROLL *dowList;
+//    CDKLABEL *title;
+//    WINDOW *subWindow;
+//    const char *dow[] =
+//    {
+//       "Monday",
+//       "Tuesday",
+//       "Wednesday",
+//       "Thursday",
+//       "Friday",
+//       "Saturday",
+//       "Sunday"
+//    };
+//    const char *mesg[5];
+//    int pick;
+
+//    CDK_PARAMS params;
+
+//    CDKparseParams (argc, argv, &params, "s:" CDK_CLI_PARAMS);
+
+//    /* Start curses. */
+//    (void) initCDKScreen (NULL);
+//    curs_set (0);
+
+//    /* Create a basic window. */
+//    subWindow = newwin (LINES, COLS , 0, 0);
+
+//    /* Start Cdk. */
+//    cdkscreen = initCDKScreen (subWindow);
+
+//    /* Box our window. */
+//    box (subWindow, ACS_VLINE, ACS_HLINE);
+//    wrefresh (subWindow);
+
+//    /* Create a basic scrolling list inside the window. */
+//    dowList = newCDKScroll (cdkscreen,
+// 			   CDKparamValue (&params, 'X', CENTER),
+// 			   CDKparamValue (&params, 'Y', CENTER),
+// 			   CDKparsePosition (CDKparamString2 (&params,
+// 							      's',
+// 							      "RIGHT")),
+// 			   CDKparamValue (&params, 'H', 10),
+// 			   CDKparamValue (&params, 'W', 15),
+// 			   "<C></U>Pick a Day",
+// 			   (CDK_CSTRING2) dow, 7,
+// 			   NONUMBERS,
+// 			   A_REVERSE,
+// 			   CDKparamValue (&params, 'N', TRUE),
+// 			   CDKparamValue (&params, 'S', FALSE));
+
+//    /* Put a title within the window. */
+//    mesg[0] = "<C><#HL(30)>";
+//    mesg[1] = "<C>This is a Cdk scrolling list";
+//    mesg[2] = "<C>inside a curses window.";
+//    mesg[3] = "<C><#HL(30)>";
+//    title = newCDKLabel (cdkscreen, CENTER, 0,
+// 			(CDK_CSTRING2) mesg, 4,
+// 			FALSE, FALSE);
+
+//    /* Refresh the screen. */
+//    refreshCDKScreen (cdkscreen);
+
+//    /* Let the user play. */
+//    pick = activateCDKScroll (dowList, 0);
+
+//    /* Clean up. */
+//    destroyCDKScroll (dowList);
+//    destroyCDKLabel (title);
+//    eraseCursesWindow (subWindow);
+//    destroyCDKScreen (cdkscreen);
+//    endCDK ();
+
+//    /* Tell them what they picked. */
+//    printf ("You picked %s\n", dow[pick]);
+//    ExitProgram (EXIT_SUCCESS);
+// }
+
+
+WINDOW *create_newwin(int height, int width, int starty, int startx);
+void destroy_win(WINDOW *local_win);
+
+int main(int argc, char *argv[])
+{	WINDOW *my_win;
+	int startx, starty, width, height;
+	int ch;
+
+	initscr();			/* Start curses mode 		*/
+	cbreak();			/* Line buffering disabled, Pass on
+					 * everty thing to me 		*/
+	keypad(stdscr, TRUE);		/* I need that nifty F1 	*/
+
+	height = 3;
+	width = 10;
+	starty = (LINES - height) / 2;	/* Calculating for a center placement */
+	startx = (COLS - width) / 2;	/* of the window		*/
+	printw("Press F1 to exit");
+	refresh();
+	my_win = create_newwin(height, width, starty, startx);
+
+	while((ch = getch()) != KEY_F(1))
+	{	switch(ch)
+		{	case KEY_LEFT:
+				destroy_win(my_win);
+				my_win = create_newwin(height, width, starty,--startx);
+				break;
+			case KEY_RIGHT:
+				destroy_win(my_win);
+				my_win = create_newwin(height, width, starty,++startx);
+				break;
+			case KEY_UP:
+				destroy_win(my_win);
+				my_win = create_newwin(height, width, --starty,startx);
+				break;
+			case KEY_DOWN:
+				destroy_win(my_win);
+				my_win = create_newwin(height, width, ++starty,startx);
+				break;	
+		}
+	}
+		
+	endwin();			/* End curses mode		  */
+	return 0;
 }
 
-// int main (void)
-// {
-//    CDKSCREEN *cdkScreen1, *cdkScreen2;
-//    CDKSCREEN *cdkScreen3, *cdkScreen4;
-//    CDKSCREEN *cdkScreen5;
-//    CDKLABEL *label1, *label2;
-//    CDKLABEL *label3, *label4;
-//    CDKDIALOG *dialog;
-//    const char *title1Mesg[4];
-//    const char *title2Mesg[4];
-//    const char *title3Mesg[4];
-//    const char *title4Mesg[4];
-//    const char *dialogMesg[10];
-//    const char *buttons[] =
-//    {
-//       "Continue",
-//       "Exit"
-//    };
+WINDOW *create_newwin(int height, int width, int starty, int startx)
+{	WINDOW *local_win;
 
-//    /* Create the screens. */
-//    cdkScreen1 = initCDKScreen (NULL);
-//    cdkScreen2 = initCDKScreen (stdscr);
-//    cdkScreen3 = initCDKScreen (stdscr);
-//    cdkScreen4 = initCDKScreen (stdscr);
-//    cdkScreen5 = initCDKScreen (stdscr);
+	local_win = newwin(height, width, starty, startx);
+	box(local_win, 0 , 0);		/* 0, 0 gives default characters 
+					 * for the vertical and horizontal
+					 * lines			*/
+	wrefresh(local_win);		/* Show that box 		*/
 
-//    /* Create the first screen. */
-//    title1Mesg[0] = "<C><#HL(30)>";
-//    title1Mesg[1] = "<C></R>This is the first screen.";
-//    title1Mesg[2] = "<C>Hit space to go to the next screen";
-//    title1Mesg[3] = "<C><#HL(30)>";
-//    label1 = newCDKLabel (cdkScreen1, CENTER, TOP,
-// 			 (CDK_CSTRING2)title1Mesg, 4,
-// 			 FALSE, FALSE);
+	return local_win;
+}
 
-//    /* Create the second screen. */
-//    title2Mesg[0] = "<C><#HL(30)>";
-//    title2Mesg[1] = "<C></R>This is the second screen.";
-//    title2Mesg[2] = "<C>Hit space to go to the next screen";
-//    title2Mesg[3] = "<C><#HL(30)>";
-//    label2 = newCDKLabel (cdkScreen2, RIGHT, CENTER,
-// 			 (CDK_CSTRING2)title2Mesg, 4,
-// 			 FALSE, FALSE);
-
-//    /* Create the third screen. */
-//    title3Mesg[0] = "<C><#HL(30)>";
-//    title3Mesg[1] = "<C></R>This is the third screen.";
-//    title3Mesg[2] = "<C>Hit space to go to the next screen";
-//    title3Mesg[3] = "<C><#HL(30)>";
-//    label3 = newCDKLabel (cdkScreen3, CENTER, BOTTOM,
-// 			 (CDK_CSTRING2)title3Mesg, 4,
-// 			 FALSE, FALSE);
-
-//    /* Create the fourth screen. */
-//    title4Mesg[0] = "<C><#HL(30)>";
-//    title4Mesg[1] = "<C></R>This is the fourth screen.";
-//    title4Mesg[2] = "<C>Hit space to go to the next screen";
-//    title4Mesg[3] = "<C><#HL(30)>";
-//    label4 = newCDKLabel (cdkScreen4, LEFT, CENTER,
-// 			 (CDK_CSTRING2)title4Mesg, 4,
-// 			 FALSE, FALSE);
-
-//    /* Create the fifth screen. */
-//    dialogMesg[0] = "<C><#HL(30)>";
-//    dialogMesg[1] = "<C>Screen 5";
-//    dialogMesg[2] = "<C>This is the last of 5 screens. If you want";
-//    dialogMesg[3] = "<C>to continue press the 'Continue' button.";
-//    dialogMesg[4] = "<C>Otherwise press the 'Exit' button";
-//    dialogMesg[5] = "<C><#HL(30)>";
-//    dialog = newCDKDialog (cdkScreen5, CENTER, CENTER,
-// 			  (CDK_CSTRING2)dialogMesg, 6,
-// 			  (CDK_CSTRING2)buttons, 2,
-// 			  A_REVERSE, TRUE, TRUE, FALSE);
-
-//    /* Do this for ever... (almost) */
-//    for (;;)
-//    {
-//       int answer;
-
-//       /* Draw the first screen. */
-//       drawCDKScreen (cdkScreen1);
-//       waitCDKLabel (label1, ' ');
-//       eraseCDKScreen (cdkScreen1);
-
-//       /* Draw the second screen. */
-//       drawCDKScreen (cdkScreen2);
-//       waitCDKLabel (label2, ' ');
-//       eraseCDKScreen (cdkScreen2);
-
-//       /* Draw the third screen. */
-//       drawCDKScreen (cdkScreen3);
-//       waitCDKLabel (label3, ' ');
-//       eraseCDKScreen (cdkScreen3);
-
-//       /* Draw the fourth screen. */
-//       drawCDKScreen (cdkScreen4);
-//       waitCDKLabel (label4, ' ');
-//       eraseCDKScreen (cdkScreen4);
-
-//       /* Draw the fourth screen. */
-//       drawCDKScreen (cdkScreen5);
-//       answer = activateCDKDialog (dialog, 0);
-
-//       /* Check the users answer. */
-//       if (answer == 1)
-//       {
-// 	 destroyCDKLabel (label1);
-// 	 destroyCDKLabel (label2);
-// 	 destroyCDKLabel (label3);
-// 	 destroyCDKLabel (label4);
-// 	 destroyCDKDialog (dialog);
-// 	 destroyCDKScreen (cdkScreen1);
-// 	 destroyCDKScreen (cdkScreen2);
-// 	 destroyCDKScreen (cdkScreen3);
-// 	 destroyCDKScreen (cdkScreen4);
-// 	 destroyCDKScreen (cdkScreen5);
-// 	 endCDK ();
-// 	 ExitProgram (EXIT_SUCCESS);
-//       }
-//    }
-// }
+void destroy_win(WINDOW *local_win)
+{	
+	/* box(local_win, ' ', ' '); : This won't produce the desired
+	 * result of erasing the window. It will leave it's four corners 
+	 * and so an ugly remnant of window. 
+	 */
+	wborder(local_win, ' ', ' ', ' ',' ',' ',' ',' ',' ');
+	/* The parameters taken are 
+	 * 1. win: the window on which to operate
+	 * 2. ls: character to be used for the left side of the window 
+	 * 3. rs: character to be used for the right side of the window 
+	 * 4. ts: character to be used for the top side of the window 
+	 * 5. bs: character to be used for the bottom side of the window 
+	 * 6. tl: character to be used for the top left corner of the window 
+	 * 7. tr: character to be used for the top right corner of the window 
+	 * 8. bl: character to be used for the bottom left corner of the window 
+	 * 9. br: character to be used for the bottom right corner of the window
+	 */
+	wrefresh(local_win);
+	delwin(local_win);
+}

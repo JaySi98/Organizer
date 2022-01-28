@@ -1,8 +1,10 @@
 #define Organizer_VERSION_MAJOR @Organizer_VERSION_MAJOR@
 #define Organizer_VERSION_MINOR @Organizer_VERSION_MINOR@
 
-#cmakedefine ADD_NCURSES
-#cmakedefine ADD_BOOST
+#define ADD_NCURSES
+#define ADD_BOOST
+
+#define DEFAULT_STRING_VALUE ' '
 
 // std::cout << argv[0] << " Version: " 
 //           << Organizer_VERSION_MAJOR << "."

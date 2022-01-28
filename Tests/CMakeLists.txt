@@ -5,12 +5,19 @@ cmake_minimum_required(VERSION 3.16.3)
 
 project(UnitTests)
 
+get_filename_component(PARENT_DIR "${PROJECT_NAME}" DIRECTORY)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS -pthread)
 
+get_filename_component(PARENT_DIR ${PROJECT_SOURCE_DIR} DIRECTORY)
+
 set(SOURCES
-    
-)
+    ${PARENT_DIR}/Src/Note.cpp
+    ${PARENT_DIR}/Src/InfoCollection.cpp
+    ${PARENT_DIR}/Src/InfoElement.cpp
+    ${PARENT_DIR}/Include/Config.h.in
+)   
 set(TESTS_SOURCES
     TestMain.cpp
 )
@@ -20,7 +27,10 @@ find_package(GTest)
 
 enable_testing()
 
-add_executable(UnitTests ${TESTS_SOURCES} ) #${SOURCES}
+add_executable(UnitTests ${TESTS_SOURCES} ${SOURCES}) #${SOURCES}
+
+# dodanie pliku konfiguracyjnego projektu
+# configure_file(${PARENT_DIR}/Include/Config.h.in ${PARENT_DIR}/Include/Config.h)
 
 # to prevent collision with the main
 target_compile_definitions(UnitTests PUBLIC UNIT_TESTS)
@@ -33,7 +43,8 @@ target_link_libraries(UnitTests PUBLIC
 
 # doesn't do anything on Linux
 target_include_directories(UnitTests PUBLIC
-    ${GTEST_INCLUDE_DIRS} 
+    PRIVATE ${PARENT_DIR}/Include    
+    PRIVATE ${GTEST_INCLUDE_DIRS} 
     PRIVATE ${EXTRA_INCLUDES}
-    PRIVATE ../Include
+    
 )

@@ -11,12 +11,18 @@ set(SOURCES
     Src/Main.cpp
     Src/GraphicsControler.cpp
     Src/GraphicWindow.cpp
+    Src/Note.cpp
+    Src/InfoCollection.cpp
+    Src/InfoElement.cpp
 )
 
 set(HEADERS
     Include/Config.h.in
     Include/GraphicsControler.h
     Include/GraphicWindow.h
+    Include/Note.h
+    Include/InfoCollection.h
+    Include/InfoElement.h
 )
 
 # wskazanie maina

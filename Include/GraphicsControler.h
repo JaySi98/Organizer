@@ -1,18 +1,33 @@
+/*
+ *
+ */
+
 #pragma once
 
 #include <stdint.h>
+#include <cdk.h>
+#include <cdk/cdk_test.h>
+#include <ncurses.h>
+
+#include <GraphicWindow.h>
+
+#define INPUT_INIT_VALUE ' '
 
 class GraphicsControler
 {
 private:
-    uint8_t opened;
+    CDK_PARAMS params;
+
+    uint8_t isOpened;
+    GraphicWindow* currentWindow;
 
 public:
-    GraphicsControler();
+    GraphicsControler(int argc, char* argv[]);
     ~GraphicsControler();
 
-    void MainLoopRoutine();
     uint8_t IsOpened();
+    void    RefreshScreen();
+    void    AnalyzeUserInput();
 };
 
 

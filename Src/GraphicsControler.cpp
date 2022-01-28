@@ -1,21 +1,49 @@
 #include <GraphicsControler.h>
 
-GraphicsControler::GraphicsControler()
+GraphicsControler::GraphicsControler(int argc, char* argv[])
 {
-    // inicjalizacja okien
+    CDKparseParams (argc, argv, &params, CDK_MIN_PARAMS);
+
+    currentWindow = new GraphicWindow();
+    isOpened = 1;
 }
 
 GraphicsControler::~GraphicsControler()
 {
-
+    delete currentWindow;
+    endCDK ();
 }
 
-void GraphicsControler::MainLoopRoutine()
-{
-    // zebranie info od okien
-}
-
+/*!
+ * @brief Returns signal if user closed the app
+ */ 
 uint8_t GraphicsControler::IsOpened()
 {
-    return opened;
+    return isOpened;
+}
+
+/*!
+ * @brief Refreshes screen
+ */
+void GraphicsControler::RefreshScreen()
+{
+    currentWindow->Refresh();
+}
+
+/*!
+ * @brief Waits for users input then analise it based on
+ *        currently opened window
+ */
+void GraphicsControler::AnalyzeUserInput()
+{
+    char input = INPUT_INIT_VALUE;
+    while (input = (char)getch ()) { }
+
+    WindowResponseType response =  currentWindow->AnalyzeInput(input);
+    
+    // podjecie akcji w zaleznosci od wartosci
+    if(response == WINDOW_RESPONSE_CLOSE)
+    {
+        isOpened = 0;
+    }
 }
